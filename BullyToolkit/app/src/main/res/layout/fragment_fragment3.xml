@@ -1,0 +1,60 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="layout.fragment3"
+    android:background="@drawable/backrepeatred">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:srcCompat="@drawable/aboutme"
+        android:id="@+id/benPicture"
+        android:layout_marginTop="37dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <RelativeLayout
+        android:id="@+id/aboutMeField"
+        android:layout_marginTop="10dp"
+        android:layout_width="300dp"
+        android:layout_height="175dp"
+        android:background="@drawable/aboutmeborder"
+        android:layout_below="@+id/benPicture"
+        android:layout_centerHorizontal="true">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/aboutMe"
+            style="@style/aboutMeTextStyle"
+            android:padding="10dp"/>
+
+        <Button
+            android:padding="0dp"
+            android:text="Donate"
+            android:textSize="10dp"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:id="@+id/donateButton"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="5dp"
+            android:layout_centerHorizontal="true"
+            />
+    </RelativeLayout>
+
+    <Button
+        android:text="Click me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="58dp"
+        android:id="@+id/clickMe"
+        android:layout_below="@+id/aboutMeField"
+        android:layout_alignLeft="@+id/benPicture"
+        android:layout_alignStart="@+id/benPicture" />
+
+
+</RelativeLayout>
+

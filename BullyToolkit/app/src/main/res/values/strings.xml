@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">Bully Toolkit</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string-array name="bodyTypeSpinArray">
+        <item>Unfit</item>
+        <item>Average</item>
+        <item>Athletic</item>
+    </string-array>
+
+    <string-array name="intelligenceSpinArray">
+        <item>Stupid</item>
+        <item>Average</item>
+        <item>Asian Smart</item>
+    </string-array>
+
+    <string-array name="wealthSpinArray">
+        <item>Poor</item>
+        <item>Average</item>
+        <item>Trump Status</item>
+    </string-array>
+
+
+    <string-array name="heightSpinArray">
+        <item>Short</item>
+        <item>Middle Class</item>
+        <item>Tall</item>
+    </string-array>
+
+    <string name="cleanFilter">Clean Filter</string>
+
+    <string name="clearSavedButton">Clear</string>
+    <string-array name="sortArray">
+        <item>Oldest - Most Recent</item>
+        <item>Most Recent - Oldest</item>
+        <item>Alphabetical</item>
+    </string-array>
+
+
+    <string name="aboutMe">"My name\'s Ben and I'm a junior in college at Texas State University majoring in computer science."
+        "I\'ve started learning android on my own time as I aspire to make something great and that is worthwhile in the future."
+        "Wanting to create something unique, I knew I needed to be more technical from my past entreprenurial efforts of an online"
+        "electronics business in High School. This is my 1st app, and it is completely free. Helping me in this endeavor is my"
+        " fellow colleuge coicendentally named Ben. Anything is appreciated! Thanks for downloading my silly app"</string>
+
+    <string name="disclaimer">"All comments, jokes, asides, rubbish, cabbages etc are of my own making and in no way represent the policy of the University of Texas State,"
+        "or any other member of the University, nor any cat, dog, goldfish, insect, bacteria, mineral, etc, on campus. Any resemblance between the above views and those of "
+        "my employer, my terminal, or the view out my window are purely coincidental. As I am self-employed, this *is* the opinion of my employer. Calm down -- it's only ones and zeros. "
+        " These opinions are shareware. If you like them, send $10."
+</string>
+
+    <string name="savedButton">Save</string>
+    <string name="generateButton">Generate</string>
+
+</resources>

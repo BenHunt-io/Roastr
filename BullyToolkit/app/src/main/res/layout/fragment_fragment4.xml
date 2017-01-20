@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="layout.fragment4"
+    android:background="@drawable/backrepeatred"
+    android:id="@+id/fragment4Layout"
+    >
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <LinearLayout
+        android:id="@+id/linearLayoutDisclaimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="2"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+                <Button
+                    android:id="@+id/disclaimButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Disclaimer"
+                    android:layout_weight="1"
+                    android:layout_margin="0dp"
+                    android:background="@drawable/clearbuttonselector"
+                    style="@style/CustomTextStyle"
+
+
+                    />
+
+                <ViewAnimator
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:padding="0dp"
+                    android:id="@+id/viewAnimator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <RelativeLayout
+                        android:minHeight="0dp"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/disclaimerborder"
+                        android:layout_below="@+id/disclaimButton"
+                        >
+
+                        <TextView
+                            android:id="@+id/disclaimerText"
+                            android:padding="10dp"
+                            android:text="@string/disclaimer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            style="@style/aboutMeTextStyle"/>
+                    </RelativeLayout>
+                </ViewAnimator>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/bsod"
+        android:layout_below="@id/linearLayoutDisclaimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/bsod"
+        android:layout_marginTop="136dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>
