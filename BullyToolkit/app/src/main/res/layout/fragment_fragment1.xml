@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     tools:context="layout.fragment1"
     android:background="@drawable/backrepeatred"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     >
 
 
@@ -169,17 +170,18 @@
 
     </RelativeLayout>
 
+
     <LinearLayout
+        android:id="@+id/layoutforSG"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="2"
         android:paddingTop="10dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:clickable="false"
         android:layout_below="@+id/textGenerateField"
-        android:clickable="false">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
         <Button
             android:layout_marginLeft="10dp"
             android:layout_marginRight="5dp"
@@ -205,18 +207,67 @@
             style="@style/saveGenerateTextStyle"
           />
 
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:text="Enter your own"
-            android:ems="10"
-            android:id="@+id/editText"
-            android:layout_weight="1" />
-
     </LinearLayout>
 
+    <!-- setting EMS to 30 allows 30 characters to be show in edit text at once -->
 
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:layout_below="@+id/layoutforSG"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+    <EditText
+        android:theme="@style/Theme.App.Base"
+        android:layout_marginLeft="7dp"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="Submit Roast to Database"
+        android:ems="30"
+        android:textSize="18sp"
+        android:id="@+id/customRoastField" />
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent">
+        <CheckBox
+                android:theme="@style/Theme.App.Base"
+                android:text="Dirty"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:id="@+id/checkBox"
+                style="@style/submitTextStyle"
+                 />
+
+            <Button
+                android:background="@drawable/submitselector"
+                android:text="@string/submitButton"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:id="@+id/submitButton"
+                style="@style/submitTextStyle"
+                android:layout_alignBottom="@id/checkBox"
+                android:layout_alignTop="@id/checkBox"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="12dp"
+                android:layout_marginEnd="12dp" />
+        </RelativeLayout>
+    </LinearLayout>
 </RelativeLayout>

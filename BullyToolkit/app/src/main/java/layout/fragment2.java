@@ -22,6 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.exetxstate.bullytoolkit.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -62,6 +65,7 @@ public class fragment2 extends Fragment implements AdapterView.OnItemSelectedLis
     String one = String.valueOf(1);
     String zero = String.valueOf(0);
     static SpinnerSelections selectionsList = new SpinnerSelections();
+    private AdView mAdView; // Adview variable for ad banner
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,6 +80,10 @@ public class fragment2 extends Fragment implements AdapterView.OnItemSelectedLis
         // Inflate the layout for this fragment
         myView = inflater.inflate(R.layout.fragment_fragment2, container, false);
 
+        MobileAds.initialize(getActivity(), "ca-app-pub-3940256099942544~3347511713");
+        mAdView = (AdView) myView.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
 //            ArrayList<String> newList = getArguments().getStringArrayList("newList");
 

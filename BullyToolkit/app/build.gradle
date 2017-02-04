@@ -28,5 +28,9 @@ dependencies {
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.android.support:design:24.2.1'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+    compile 'com.google.firebase:firebase-database:10.0.1' // Linking FireBase Database
     testCompile 'junit:junit:4.12'
+    compile 'com.google.firebase:firebase-ads:10.0.1' // Linking FireBase ads
+    compile 'com.google.android.gms:play-services-ads:10.0.1'
 }
+apply plugin: 'com.google.gms.google-services' // This was required to connect to FireBase

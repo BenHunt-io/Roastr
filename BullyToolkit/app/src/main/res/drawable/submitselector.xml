@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Switches between a red and black border for a button background" -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/submitshapeselected" android:state_pressed="true" />
+    <item android:drawable="@drawable/submitshape" />
+</selector>

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "959029189660",
+    "firebase_url": "https://roastr-5891b.firebaseio.com",
+    "project_id": "roastr-5891b",
+    "storage_bucket": "roastr-5891b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:959029189660:android:958bb5c2f1ea383d",
+        "android_client_info": {
+          "package_name": "com.exetxstate.bullytoolkit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "959029189660-7qgg4pvtasj580fa2q7snmpq4c2gem0u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAp9OvgEf0QgcpwpxEcZMafXdgQ1LNJfjU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "959029189660-7qgg4pvtasj580fa2q7snmpq4c2gem0u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

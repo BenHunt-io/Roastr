@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -25,6 +27,11 @@ import android.widget.Toast;
 
 import com.exetxstate.bullytoolkit.MainActivity;
 import com.exetxstate.bullytoolkit.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.Text;
 
@@ -47,7 +54,7 @@ import pl.droidsonroids.gif.GifTextView;
 import static android.content.ContentValues.TAG;
 
 
-public class fragment1 extends Fragment implements AdapterView.OnItemSelectedListener{
+public class fragment1 extends Fragment implements AdapterView.OnItemSelectedListener {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Testing GitHub Commits and Pulls ///////////////////////////////////////////////////////////////////////
@@ -89,6 +96,11 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
     String sortFileName = "sortedFile";
     String savedSelectionsFile = "selectionsFile";
 
+    Button submitButton; // Button for submitting user roasts to FireBase Database
+    EditText customRoastField; // Text Field for entering user created custom roast
+    CheckBox submitKind; // What kind of roast - Clean / Dirty
+
+    private AdView mAdView; // Adview variable for ad banner
 
 
     @Override
@@ -96,17 +108,17 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
                              Bundle savedInstanceState) {
 
 
-
-
         // Inflate the layout for this fragment
         View myView = inflater.inflate(R.layout.fragment_fragment1, container, false);
 
+        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bully.otf");
         //readFromFile();
-
-        fileInputTest = (TextView)getActivity().findViewById(R.id.fileInputTest);
-        soundButton = (ImageButton)myView.findViewById(R.id.soundButton);
-        undoButton = (ImageButton)myView.findViewById(R.id.undoButton);
-        saveButton = (Button)myView.findViewById(R.id.savedButton);
+        writeToDatabase(myView, tf); // Waits on Button to be clicked. Takes in inflated layout VIEW
+        runAds(myView); // runs function that begins ads
+        fileInputTest = (TextView) getActivity().findViewById(R.id.fileInputTest);
+        soundButton = (ImageButton) myView.findViewById(R.id.soundButton);
+        undoButton = (ImageButton) myView.findViewById(R.id.undoButton);
+        saveButton = (Button) myView.findViewById(R.id.savedButton);
 
 //        String test = "TESSTT";
 //        intent = new Intent(getActivity().getBaseContext(), MainActivity.class);
@@ -117,10 +129,10 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
             @Override
             public void onClick(View view) {
                 StringBuffer saveBuff;
-                if(sentence != null) {
+                if (sentence != null) {
                     writeToFile(sentence, sortFileName);
                     writeToFile(savedSelectionsFile);
-                    
+
                 }
 //                int count = 0;
 
@@ -141,73 +153,71 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
         //cleanFilter.setTrackDrawable(R.drawable.switchdrawable);
 
 
-        wealthSpinner = (Spinner)myView.findViewById(R.id.wealthSpinner);
+        wealthSpinner = (Spinner) myView.findViewById(R.id.wealthSpinner);
         ArrayAdapter wealthAdapter = ArrayAdapter.createFromResource(getContext(), R.array.wealthSpinArray, R.layout.spinnerlayoutcustom);
         wealthSpinner.setAdapter(wealthAdapter);
         wealthSpinner.setOnItemSelectedListener(this);
 
-        heightSpinner = (Spinner)myView.findViewById(R.id.heightSpinner);
+        heightSpinner = (Spinner) myView.findViewById(R.id.heightSpinner);
         ArrayAdapter heightAdapter = ArrayAdapter.createFromResource(getContext(), R.array.heightSpinArray, R.layout.spinnerlayoutcustom);
         heightSpinner.setAdapter(heightAdapter);
         heightSpinner.setOnItemSelectedListener(this);
 
-        bodyTypeSpinner = (Spinner)myView.findViewById(R.id.bodySpinner);  // NEed to change resource to match name
+        bodyTypeSpinner = (Spinner) myView.findViewById(R.id.bodySpinner);  // NEed to change resource to match name
         ArrayAdapter bodyTypeAdapter = ArrayAdapter.createFromResource(getContext(), R.array.bodyTypeSpinArray, R.layout.spinnerlayoutcustom);
         bodyTypeSpinner.setAdapter(bodyTypeAdapter);
         bodyTypeSpinner.setOnItemSelectedListener(this);
 
-        intelligenceSpinner = (Spinner)myView.findViewById(R.id.intelligenceSpinner);  // Need to change resource to match name
+        intelligenceSpinner = (Spinner) myView.findViewById(R.id.intelligenceSpinner);  // Need to change resource to match name
         ArrayAdapter intelligenceAdapter = ArrayAdapter.createFromResource(getContext(), R.array.intelligenceSpinArray, R.layout.spinnerlayoutcustom);
         intelligenceSpinner.setAdapter(intelligenceAdapter);
         intelligenceSpinner.setOnItemSelectedListener(this);
 
-        bullygif = (GifImageView)myView.findViewById(R.id.bullygif);
+        bullygif = (GifImageView) myView.findViewById(R.id.bullygif);
         bullygif.setVisibility(bullygif.INVISIBLE);
-        displayGenerate = (TextView)myView.findViewById(R.id.generateText);
-        generateButton = (Button)myView.findViewById(R.id.generateButton);
-
+        displayGenerate = (TextView) myView.findViewById(R.id.generateText);
+        generateButton = (Button) myView.findViewById(R.id.generateButton);
 
 
         generateButton.setOnClickListener(new View.OnClickListener() {
-           @Override
-            public void onClick(View view) {
-        sentence = makeSentence();
-
-        Thread timer = new Thread() {
             @Override
-            public void run() {
-                try{
-                    getActivity().runOnUiThread(new Runnable() {
+            public void onClick(View view) {
+                sentence = makeSentence();
 
-                        @Override
-                        public void run() {
-                            lastSentence = displayGenerate.getText().toString();
-                            displayGenerate.setText("");
-                            bullygif.setVisibility(bullygif.VISIBLE);
+                Thread timer = new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            getActivity().runOnUiThread(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    lastSentence = displayGenerate.getText().toString();
+                                    displayGenerate.setText("");
+                                    bullygif.setVisibility(bullygif.VISIBLE);
+                                }
+                            });
+                            sleep(750);
+                            getActivity().runOnUiThread(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    bullygif.setVisibility(bullygif.INVISIBLE);
+                                    displayGenerate.setText(sentence);
+                                    //newList.add(sentence.toString());
+                                    Log.d(TAG, "new Sentence: " + sentence + "Old Sentence: " + lastSentence);
+                                }
+                            });
+
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                    });
-                    sleep(750);
-                    getActivity().runOnUiThread(new Runnable() {
 
-                        @Override
-                        public void run() {
-                            bullygif.setVisibility(bullygif.INVISIBLE);
-                            displayGenerate.setText(sentence);
-                            //newList.add(sentence.toString());
-                            Log.d(TAG, "new Sentence: " + sentence + "Old Sentence: " + lastSentence);
-                        }
-                    });
-
-                }
-                catch(InterruptedException e){
-                    e.printStackTrace();
-                }
-
-            }
+                    }
 
 
-        };
-        timer.start();
+                };
+                timer.start();
             }
         });
 
@@ -216,14 +226,14 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
             public void onClick(View view) {
                 getActivity().runOnUiThread(new Runnable() {
 
-                                @Override
-                                public void run() {
-                                    if(lastSentence != null) {
-                                        String tempSentence;
-                                        displayGenerate.setText(lastSentence);
-                                        tempSentence = lastSentence;
-                                        lastSentence = sentence;
-                                        sentence = tempSentence;
+                    @Override
+                    public void run() {
+                        if (lastSentence != null) {
+                            String tempSentence;
+                            displayGenerate.setText(lastSentence);
+                            tempSentence = lastSentence;
+                            lastSentence = sentence;
+                            sentence = tempSentence;
                         }
                         Log.d(TAG, "run: test");
                     }
@@ -235,7 +245,7 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
         ttsObject = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if(status == TextToSpeech.SUCCESS){
+                if (status == TextToSpeech.SUCCESS) {
                     setLangResult = ttsObject.setLanguage(Locale.ENGLISH);
                 }
 
@@ -245,14 +255,12 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
         soundButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(setLangResult == TextToSpeech.LANG_NOT_SUPPORTED || setLangResult == TextToSpeech.LANG_MISSING_DATA){
+                if (setLangResult == TextToSpeech.LANG_NOT_SUPPORTED || setLangResult == TextToSpeech.LANG_MISSING_DATA) {
                     Toast.makeText(getContext(), "Lanuage not supported", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        ttsObject.speak(sentence, TextToSpeech.QUEUE_FLUSH, null,null);
-                    }
-                    else {
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ttsObject.speak(sentence, TextToSpeech.QUEUE_FLUSH, null, null);
+                    } else {
                         ttsObject.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
                     }
                 }
@@ -261,13 +269,12 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
 
         generateButton.setTransformationMethod(null); // Disables buttons from being sets to ALL CAPS
         saveButton.setTransformationMethod(null); // Disables buttons from being sets to ALL CAPS
-        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bully.otf");
+        // Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bully.otf");
+        // ^^ moved to beginning of program to pass into different functions
         generateButton.setTypeface(tf);
         saveButton.setTypeface(tf);
-       // getContext().deleteFile(fosTest);
+        // getContext().deleteFile(fosTest);
         return myView;
-
-
 
 
     }
@@ -281,14 +288,18 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
     // raceSpinner.getItemAtPosition(pos).toString(); <-- this returns the name of the spinner selected at a position
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
-        switch(adapterView.getId()){
-            case R.id.intelligenceSpinner: saveIntelligencePos = pos;
+        switch (adapterView.getId()) {
+            case R.id.intelligenceSpinner:
+                saveIntelligencePos = pos;
                 break;
-            case R.id.bodySpinner: saveBodyPos = pos;
+            case R.id.bodySpinner:
+                saveBodyPos = pos;
                 break;
-            case R.id.wealthSpinner: saveWealthPos = pos;
+            case R.id.wealthSpinner:
+                saveWealthPos = pos;
                 break;
-            case R.id.heightSpinner: saveHeightPos = pos;
+            case R.id.heightSpinner:
+                saveHeightPos = pos;
         }
     }
 
@@ -322,7 +333,7 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
 //        timer.start();
 //    }
 
-    public String makeSentence(){
+    public String makeSentence() {
         final int four = 4;
         int position1;
         int position2;
@@ -333,40 +344,51 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
         Random rand = new Random();
         FilteredClass sentObj = new FilteredClass();
 
-        if(!clean){ // Find random at each level of the array. Strings stored in FilteredClass.java
+        if (!clean) { // Find random at each level of the array. Strings stored in FilteredClass.java
             int randCleanDirty = rand.nextInt(sentObj.allSelections.length + 0);
             int randTwoOfFour = rand.nextInt(sentObj.allSelections[randCleanDirty].length + 0);
-            switch(randTwoOfFour){ // Makes sure it chooses right user selected filter
-                case 0: position1 = saveBodyPos;
+            switch (randTwoOfFour) { // Makes sure it chooses right user selected filter
+                case 0:
+                    position1 = saveBodyPos;
                     break;
-                case 1: position1 = saveIntelligencePos;
+                case 1:
+                    position1 = saveIntelligencePos;
                     break;
-                case 2: position1 = saveWealthPos;
+                case 2:
+                    position1 = saveWealthPos;
                     break;
-                case 3: position1 = saveHeightPos;
+                case 3:
+                    position1 = saveHeightPos;
                     break;
-                default: position1 = -1;
+                default:
+                    position1 = -1;
             }
-            Log.d(TAG, "saveSorts" + saveBodyPos + " " + saveIntelligencePos + " " + saveWealthPos + " " + saveHeightPos );
-            int randSentence =  rand.nextInt(sentObj.allSelections[randCleanDirty][randTwoOfFour][position1].length + 0);
-            Log.d(TAG, "pos1" + randCleanDirty + " "+ randTwoOfFour + " " + position1 + " " + randSentence);
+            Log.d(TAG, "saveSorts" + saveBodyPos + " " + saveIntelligencePos + " " + saveWealthPos + " " + saveHeightPos);
+            int randSentence = rand.nextInt(sentObj.allSelections[randCleanDirty][randTwoOfFour][position1].length + 0);
+            Log.d(TAG, "pos1" + randCleanDirty + " " + randTwoOfFour + " " + position1 + " " + randSentence);
             sentenceOne = sentObj.allSelections[randCleanDirty][randTwoOfFour][position1][randSentence].toString();
 
             int randCleanDirty2 = rand.nextInt(sentObj.allSelections.length + 0);
             int randTwoOfFour2 = rand.nextInt(sentObj.allSelections[randCleanDirty2].length + 0);
-            switch(randTwoOfFour2){
-                case 0: position2 = saveBodyPos;
+            switch (randTwoOfFour2) {
+                case 0:
+                    position2 = saveBodyPos;
                     break;
-                case 1: position2 = saveIntelligencePos;
+                case 1:
+                    position2 = saveIntelligencePos;
                     break;
-                case 2: position2 = saveWealthPos;
+                case 2:
+                    position2 = saveWealthPos;
                     break;
-                case 3: position2 = saveHeightPos;
+                case 3:
+                    position2 = saveHeightPos;
                     break;
-                default: position2 = -1;
+                default:
+                    position2 = -1;
             }
-            Log.d(TAG, "pos1" + randCleanDirty2 + " "+ randTwoOfFour2 + " " + position2);
-            int randSentence2 =  rand.nextInt(sentObj.allSelections[randCleanDirty2][randTwoOfFour2][position2].length + 0);;
+            Log.d(TAG, "pos1" + randCleanDirty2 + " " + randTwoOfFour2 + " " + position2);
+            int randSentence2 = rand.nextInt(sentObj.allSelections[randCleanDirty2][randTwoOfFour2][position2].length + 0);
+            ;
             sentenceTwo = sentObj.allSelections[randCleanDirty2][randTwoOfFour2][position2][randSentence2].toString();
             // Don't need +0 because its from 0 to length exclusive by default
             int randJunction = rand.nextInt(sentenceJunction.length);
@@ -381,18 +403,18 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
         return fullSentence;
     }
 
-    public void writeToFile(String sentence, String fileName){
+    public void writeToFile(String sentence, String fileName) {
         File file = new File(fileName);
         try {
-            if(!file.exists()) {
+            if (!file.exists()) {
                 //fos = new FileOutputStream(fosTest, true);
-                fos = getActivity().openFileOutput(fileName, Context.MODE_APPEND );
+                fos = getActivity().openFileOutput(fileName, Context.MODE_APPEND);
                 // If file does not exist, means saved has been cleared. So saved selections should clear too.
                 // Maybe a better way to do this.. Fragment 2?
-                if(spinnerList.bodyType != null) spinnerList.bodyType.clear();
-                if(spinnerList.intelligence != null) spinnerList.intelligence.clear();
-                if(spinnerList.wealth != null) spinnerList.wealth.clear();
-                if(spinnerList.height != null) spinnerList.height.clear();
+                if (spinnerList.bodyType != null) spinnerList.bodyType.clear();
+                if (spinnerList.intelligence != null) spinnerList.intelligence.clear();
+                if (spinnerList.wealth != null) spinnerList.wealth.clear();
+                if (spinnerList.height != null) spinnerList.height.clear();
 //                if(spinnerList != null) {
 //                    spinnerList.bodyType.clear();
 //                    spinnerList.intelligence.clear();
@@ -403,7 +425,7 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
             fos.write(sentence.getBytes());
             fos.write("\n".getBytes());
             fos.close();
-          //  Log.d(TAG, getActivity().getFilesDir().getAbsolutePath());
+            //  Log.d(TAG, getActivity().getFilesDir().getAbsolutePath());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -411,7 +433,7 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
         }
     }
 
-    public void writeToFile(String fileName){
+    public void writeToFile(String fileName) {
         // Saves users spinner selections in strings for readability in writing to file
         String bodyTypeSelection = bodyTypeSpinner.getItemAtPosition(saveBodyPos).toString();
         String intelligenceSelection = intelligenceSpinner.getItemAtPosition(saveIntelligencePos).toString();
@@ -419,15 +441,15 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
         String heightSelection = heightSpinner.getItemAtPosition(saveHeightPos).toString();
         File file = new File(fileName);
         try {
-            if(!file.exists()) {
+            if (!file.exists()) {
                 //fos = new FileOutputStream(fosTest, true);
-                fos = getActivity().openFileOutput(fileName, Context.MODE_APPEND );
+                fos = getActivity().openFileOutput(fileName, Context.MODE_APPEND);
                 // If file does not exist, means saved has been cleared. So saved selections should clear too.
                 // Maybe a better way to do this.. Fragment 2?
-                if(spinnerList.bodyType != null) spinnerList.bodyType.clear();
-                if(spinnerList.intelligence != null) spinnerList.intelligence.clear();
-                if(spinnerList.wealth != null) spinnerList.wealth.clear();
-                if(spinnerList.height != null) spinnerList.height.clear();
+                if (spinnerList.bodyType != null) spinnerList.bodyType.clear();
+                if (spinnerList.intelligence != null) spinnerList.intelligence.clear();
+                if (spinnerList.wealth != null) spinnerList.wealth.clear();
+                if (spinnerList.height != null) spinnerList.height.clear();
 //                if(spinnerList != null) {
 //                    spinnerList.bodyType.clear();
 //                    spinnerList.intelligence.clear();
@@ -437,7 +459,7 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
             }
             Log.d(TAG, "writeToFile: " + bodyTypeSpinner.getItemAtPosition(saveBodyPos).toString());
             Log.d(TAG, "writeToFile: " + intelligenceSpinner.getItemAtPosition(saveIntelligencePos).toString());
-            Log.d(TAG, "writeToFile: "+ wealthSpinner.getItemAtPosition(saveWealthPos).toString());
+            Log.d(TAG, "writeToFile: " + wealthSpinner.getItemAtPosition(saveWealthPos).toString());
             Log.d(TAG, "writeToFile: " + heightSpinner.getItemAtPosition(saveHeightPos).toString());
             fos.write(bodyTypeSelection.getBytes());
             fos.write("\n".getBytes());
@@ -455,6 +477,59 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
             e.printStackTrace();
         }
         // sets values to instance of SpinnerSelections class. (Saves what users selected when they click save)
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////*
+    // writeToDatabase(View myView): Takes in inflated view from the onCreateView()    *
+    // it is called myView. This function writes to the FireBase database without      *
+    // overwriting. Authentication not required due to the nature of the program       *
+    // Returns: Void                                                                   *
+    ///////////////////////////////////////////////////////////////////////////////////*
+    public void writeToDatabase(View myView, Typeface tf) {
+        submitButton = (Button) myView.findViewById(R.id.submitButton);
+        customRoastField = (EditText)myView.findViewById(R.id.customRoastField);
+        submitKind = (CheckBox)myView.findViewById(R.id.checkBox);
+
+        submitButton.setTypeface(tf);
+        customRoastField.setTypeface(tf);
+        submitKind.setTypeface(tf);
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Write a message to the database
+                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                // .push() enables for it to not overwrite previous submission to database
+                DatabaseReference myRef;
+
+                if(submitKind.isChecked()) {
+                    myRef = firebaseDatabase.getReference("Dirty").push();
+                    myRef.setValue(customRoastField.getText().toString());
+                }
+                else {
+                    myRef = firebaseDatabase.getReference("Clean").push();
+                    myRef.setValue(customRoastField.getText().toString());
+                }
+
+
+            }
+        });
+
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////*
+    // runAds(View myView): Takes in inflated view from the onCreateView()
+    // it is called myView. Makes an ad request and passes it into the adView to load
+    //
+    // Returns: Void                                                                   *
+    ///////////////////////////////////////////////////////////////////////////////////*
+    public void runAds(View myView){
+
+        MobileAds.initialize(getActivity(), "ca-app-pub-3940256099942544~3347511713");
+        mAdView = (AdView) myView.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
 }
