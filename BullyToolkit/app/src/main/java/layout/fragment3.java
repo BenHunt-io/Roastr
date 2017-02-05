@@ -27,7 +27,7 @@ public class fragment3 extends Fragment {
     IabHelper mHelper;
 
     private Button donateButton;
-    private Button clickMe;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,8 +36,7 @@ public class fragment3 extends Fragment {
         View myView = inflater.inflate(R.layout.fragment_fragment3, container, false);
 
         donateButton = (Button)myView.findViewById(R.id.donateButton);
-        clickMe = (Button)myView.findViewById(R.id.clickMe);
-        clickMe.setEnabled(false);
+
 
         String base64EncodedPublicKey =
                 "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwjlu2m+rhvvJKt1WxqvVSyL4gy8nQGmay/7pWS4M0ntMGHYES9kiecCBYCLsXriynCLnKf0ZN0p1uD" +
@@ -64,23 +63,9 @@ public class fragment3 extends Fragment {
             }
         });
 
-        clickMe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                buttonClicked(v);
-            }
-        });
-
-
-
         return myView;
     }
 
-    public void buttonClicked(View view)
-    {
-        clickMe.setEnabled(false);
-        donateButton.setEnabled(true);
-    }
 
     public void buyClick(View view) {
         mHelper.launchPurchaseFlow(getActivity(), ITEM_SKU, 10001, mPurchaseFinishedListener, "mypurchasetoken");
@@ -132,12 +117,7 @@ public class fragment3 extends Fragment {
     IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
         @Override
         public void onConsumeFinished(Purchase purchase, IabResult result) {
-            if(result.isSuccess()) {
-                clickMe.setEnabled(true);
-            }
-            else{
-                // handle the error
-            }
+
         }
     };
 

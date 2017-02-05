@@ -45,16 +45,6 @@
             />
     </RelativeLayout>
 
-    <Button
-        android:text="Click me"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="58dp"
-        android:id="@+id/clickMe"
-        android:layout_below="@+id/aboutMeField"
-        android:layout_alignLeft="@+id/benPicture"
-        android:layout_alignStart="@+id/benPicture" />
-
 
 </RelativeLayout>
 

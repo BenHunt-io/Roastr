@@ -56,14 +56,6 @@ import static android.content.ContentValues.TAG;
 
 public class fragment1 extends Fragment implements AdapterView.OnItemSelectedListener {
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Testing GitHub Commits and Pulls ///////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Testing GitHub Branching -- Making Comments --  ///////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     String[] sentenceJunction = {" and ", " also ", " not to mention ", " and to top it off ", " and shit, "};
 
 
@@ -111,169 +103,28 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
         // Inflate the layout for this fragment
         View myView = inflater.inflate(R.layout.fragment_fragment1, container, false);
 
-        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bully.otf");
-        //readFromFile();
-        writeToDatabase(myView, tf); // Waits on Button to be clicked. Takes in inflated layout VIEW
-        runAds(myView); // runs function that begins ads
-        fileInputTest = (TextView) getActivity().findViewById(R.id.fileInputTest);
-        soundButton = (ImageButton) myView.findViewById(R.id.soundButton);
-        undoButton = (ImageButton) myView.findViewById(R.id.undoButton);
-        saveButton = (Button) myView.findViewById(R.id.savedButton);
-
-//        String test = "TESSTT";
-//        intent = new Intent(getActivity().getBaseContext(), MainActivity.class);
-//        intent.putExtra("newList", test);
-//        getActivity().startActivity(intent);
-
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                StringBuffer saveBuff;
-                if (sentence != null) {
-                    writeToFile(sentence, sortFileName);
-                    writeToFile(savedSelectionsFile);
-
-                }
-//                int count = 0;
-
-//                intent = new Intent(getActivity().getBaseContext(), MainActivity.class);
-//                intent.putStringArrayListExtra("newList", newList);
-//                getActivity().startActivity(intent);
-
-
-//               while(newList.size() > count){
-//                   Log.d(TAG, "Size of List: " + newList.size());
-//                   Log.d(TAG, newList.get(count) + " TESTSPACE ");
-//                   count++;
-//               }
-            }
-        });
-
-        //cleanFilter = (Switch)myView.findViewById(R.id.cleanFilter);
-        //cleanFilter.setTrackDrawable(R.drawable.switchdrawable);
-
-
-        wealthSpinner = (Spinner) myView.findViewById(R.id.wealthSpinner);
-        ArrayAdapter wealthAdapter = ArrayAdapter.createFromResource(getContext(), R.array.wealthSpinArray, R.layout.spinnerlayoutcustom);
-        wealthSpinner.setAdapter(wealthAdapter);
-        wealthSpinner.setOnItemSelectedListener(this);
-
-        heightSpinner = (Spinner) myView.findViewById(R.id.heightSpinner);
-        ArrayAdapter heightAdapter = ArrayAdapter.createFromResource(getContext(), R.array.heightSpinArray, R.layout.spinnerlayoutcustom);
-        heightSpinner.setAdapter(heightAdapter);
-        heightSpinner.setOnItemSelectedListener(this);
-
-        bodyTypeSpinner = (Spinner) myView.findViewById(R.id.bodySpinner);  // NEed to change resource to match name
-        ArrayAdapter bodyTypeAdapter = ArrayAdapter.createFromResource(getContext(), R.array.bodyTypeSpinArray, R.layout.spinnerlayoutcustom);
-        bodyTypeSpinner.setAdapter(bodyTypeAdapter);
-        bodyTypeSpinner.setOnItemSelectedListener(this);
-
-        intelligenceSpinner = (Spinner) myView.findViewById(R.id.intelligenceSpinner);  // Need to change resource to match name
-        ArrayAdapter intelligenceAdapter = ArrayAdapter.createFromResource(getContext(), R.array.intelligenceSpinArray, R.layout.spinnerlayoutcustom);
-        intelligenceSpinner.setAdapter(intelligenceAdapter);
-        intelligenceSpinner.setOnItemSelectedListener(this);
-
         bullygif = (GifImageView) myView.findViewById(R.id.bullygif);
         bullygif.setVisibility(bullygif.INVISIBLE);
-        displayGenerate = (TextView) myView.findViewById(R.id.generateText);
-        generateButton = (Button) myView.findViewById(R.id.generateButton);
+
+        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bully.otf");
 
 
-        generateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sentence = makeSentence();
-
-                Thread timer = new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            getActivity().runOnUiThread(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    lastSentence = displayGenerate.getText().toString();
-                                    displayGenerate.setText("");
-                                    bullygif.setVisibility(bullygif.VISIBLE);
-                                }
-                            });
-                            sleep(750);
-                            getActivity().runOnUiThread(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    bullygif.setVisibility(bullygif.INVISIBLE);
-                                    displayGenerate.setText(sentence);
-                                    //newList.add(sentence.toString());
-                                    Log.d(TAG, "new Sentence: " + sentence + "Old Sentence: " + lastSentence);
-                                }
-                            });
-
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
+        writeToDatabase(myView, tf); // Waits on Button to be clicked. Takes in inflated layout VIEW
+        runAds(myView); // runs function that begins ads
+        initializeSpinners(myView);
+        generate(myView, tf);
+        save(myView, tf);
+        undo(myView);
+        textToVoice(myView);
 
 
-                };
-                timer.start();
-            }
-        });
+        fileInputTest = (TextView) getActivity().findViewById(R.id.fileInputTest);
 
-        undoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (lastSentence != null) {
-                            String tempSentence;
-                            displayGenerate.setText(lastSentence);
-                            tempSentence = lastSentence;
-                            lastSentence = sentence;
-                            sentence = tempSentence;
-                        }
-                        Log.d(TAG, "run: test");
-                    }
-                });
-
-            }
-        });
-
-        ttsObject = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    setLangResult = ttsObject.setLanguage(Locale.ENGLISH);
-                }
-
-            }
-        });
-
-        soundButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (setLangResult == TextToSpeech.LANG_NOT_SUPPORTED || setLangResult == TextToSpeech.LANG_MISSING_DATA) {
-                    Toast.makeText(getContext(), "Lanuage not supported", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        ttsObject.speak(sentence, TextToSpeech.QUEUE_FLUSH, null, null);
-                    } else {
-                        ttsObject.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
-                    }
-                }
-            }
-        });
-
+        
+        submitButton.setTransformationMethod(null); // Disables buttons from being sets to ALL CAPS
         generateButton.setTransformationMethod(null); // Disables buttons from being sets to ALL CAPS
         saveButton.setTransformationMethod(null); // Disables buttons from being sets to ALL CAPS
-        // Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bully.otf");
-        // ^^ moved to beginning of program to pass into different functions
-        generateButton.setTypeface(tf);
-        saveButton.setTypeface(tf);
-        // getContext().deleteFile(fosTest);
+
         return myView;
 
 
@@ -286,6 +137,12 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
     }
 
     // raceSpinner.getItemAtPosition(pos).toString(); <-- this returns the name of the spinner selected at a position
+
+    ///////////////////////////////////////////////////////////////////////////////////////////*
+    //OnItemSelected(--,--,--,--): Depending on what spinner is selected it saves the integer
+    //position of that selection. IE unfit pos = 0
+    //Returns: [Void]
+    ///////////////////////////////////////////////////////////////////////////////////////////*
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
         switch (adapterView.getId()) {
@@ -308,31 +165,13 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
 
     }
 
-//    @Override
-//    public void onClick(View view) {
-//        //View parent = (View)view.getParent();
-//        //bullygif = (GifImageView)parent.findViewById(R.id.bullygif);
-//        //bullygif.setVisibility(bullygif.INVISIBLE);
-//        final String sentence = makeSentence();
-//
-//        Thread timer = new Thread() {
-//            @Override
-//            public void run() {
-//                try{
-//                    sleep(2000);
-//
-//                }
-//                catch(InterruptedException e){
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//
-//
-//        };
-//        timer.start();
-//    }
-
+    ///////////////////////////////////////////////////////////////////////////////////*
+    // makeSentence(): Depending on the selections from the spinners a sentence is
+    // created from the FilteredClass that holds all the different sentences/roasts
+    // a random number is generated to make random selection of sentences within
+    // the selected filters
+    // Returns: [String] - Sentence/Roast to be displayed
+    ///////////////////////////////////////////////////////////////////////////////////*
     public String makeSentence() {
         final int four = 4;
         int position1;
@@ -403,6 +242,12 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
         return fullSentence;
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////*
+    // writeToFile(String sentence, String FileName): Takes in inflated view from the onCreateView()
+    //
+    //
+    // Returns: Void
+    ///////////////////////////////////////////////////////////////////////////////////*
     public void writeToFile(String sentence, String fileName) {
         File file = new File(fileName);
         try {
@@ -433,6 +278,12 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////*
+    // writeToFile(String fileName): Takes in inflated view from the onCreateView()
+    //
+    //
+    // Returns: Void
+    ///////////////////////////////////////////////////////////////////////////////////*
     public void writeToFile(String fileName) {
         // Saves users spinner selections in strings for readability in writing to file
         String bodyTypeSelection = bodyTypeSpinner.getItemAtPosition(saveBodyPos).toString();
@@ -450,12 +301,6 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
                 if (spinnerList.intelligence != null) spinnerList.intelligence.clear();
                 if (spinnerList.wealth != null) spinnerList.wealth.clear();
                 if (spinnerList.height != null) spinnerList.height.clear();
-//                if(spinnerList != null) {
-//                    spinnerList.bodyType.clear();
-//                    spinnerList.intelligence.clear();
-//                    spinnerList.wealth.clear();
-//                    spinnerList.height.clear();
-//                }
             }
             Log.d(TAG, "writeToFile: " + bodyTypeSpinner.getItemAtPosition(saveBodyPos).toString());
             Log.d(TAG, "writeToFile: " + intelligenceSpinner.getItemAtPosition(saveIntelligencePos).toString());
@@ -481,10 +326,12 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
 
 
     ///////////////////////////////////////////////////////////////////////////////////*
-    // writeToDatabase(View myView): Takes in inflated view from the onCreateView()    *
-    // it is called myView. This function writes to the FireBase database without      *
-    // overwriting. Authentication not required due to the nature of the program       *
-    // Returns: Void                                                                   *
+    // writeToDatabase(View myView, Typeface tf): Takes in inflated view from the
+    // onCreateView() it is called myView and a font, tf. This function writes to the
+    // FireBase database without overwriting. Authentication not required due to the
+    // nature of the program
+    //
+    // Returns: Void
     ///////////////////////////////////////////////////////////////////////////////////*
     public void writeToDatabase(View myView, Typeface tf) {
         submitButton = (Button) myView.findViewById(R.id.submitButton);
@@ -506,10 +353,13 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
                 if(submitKind.isChecked()) {
                     myRef = firebaseDatabase.getReference("Dirty").push();
                     myRef.setValue(customRoastField.getText().toString());
+                    // How to toast: Toast toast = Toast.makeText(context,text,duration); then .show()
+                    Toast.makeText(getActivity(),"Submission to Database Successful", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     myRef = firebaseDatabase.getReference("Clean").push();
                     myRef.setValue(customRoastField.getText().toString());
+                    Toast.makeText(getActivity(),"Submission to Database Successful", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -530,6 +380,146 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
         mAdView = (AdView) myView.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+    }
+
+    public void generate(View myView, Typeface tf){
+        displayGenerate = (TextView) myView.findViewById(R.id.generateText); // TextField for roasts
+        generateButton = (Button) myView.findViewById(R.id.generateButton);
+        generateButton.setTypeface(tf);
+
+        generateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sentence = makeSentence();
+
+                Thread timer = new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            getActivity().runOnUiThread(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    lastSentence = displayGenerate.getText().toString();
+                                    displayGenerate.setText("");
+                                    bullygif.setVisibility(bullygif.VISIBLE);
+                                }
+                            });
+                            sleep(750);
+                            getActivity().runOnUiThread(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    bullygif.setVisibility(bullygif.INVISIBLE);
+                                    displayGenerate.setText(sentence);
+                                    //newList.add(sentence.toString());
+                                    Log.d(TAG, "new Sentence: " + sentence + "Old Sentence: " + lastSentence);
+                                }
+                            });
+
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+
+                };
+                timer.start();
+            }
+        });
+    }
+
+    public void save(View myView, Typeface tf){
+
+        saveButton = (Button) myView.findViewById(R.id.savedButton);
+        saveButton.setTypeface(tf);
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                StringBuffer saveBuff;
+                if (sentence != null) {
+                    writeToFile(sentence, sortFileName);
+                    writeToFile(savedSelectionsFile);
+
+                }
+            }
+        });
+    }
+
+    public void undo(View myView){
+        undoButton = (ImageButton) myView.findViewById(R.id.undoButton);
+        undoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (lastSentence != null) {
+                            String tempSentence;
+                            displayGenerate.setText(lastSentence);
+                            tempSentence = lastSentence;
+                            lastSentence = sentence;
+                            sentence = tempSentence;
+                        }
+                        Log.d(TAG, "run: test");
+                    }
+                });
+
+            }
+        });
+    }
+
+    public void textToVoice(View myView){
+        soundButton = (ImageButton) myView.findViewById(R.id.soundButton);
+        ttsObject = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    setLangResult = ttsObject.setLanguage(Locale.ENGLISH);
+                }
+
+            }
+        });
+
+        soundButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (setLangResult == TextToSpeech.LANG_NOT_SUPPORTED || setLangResult == TextToSpeech.LANG_MISSING_DATA) {
+                    Toast.makeText(getContext(), "Lanuage not supported", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ttsObject.speak(sentence, TextToSpeech.QUEUE_FLUSH, null, null);
+                    } else {
+                        ttsObject.speak(sentence, TextToSpeech.QUEUE_FLUSH, null);
+                    }
+                }
+            }
+        });
+    }
+
+    public void initializeSpinners(View myView){
+        wealthSpinner = (Spinner) myView.findViewById(R.id.wealthSpinner);
+        ArrayAdapter wealthAdapter = ArrayAdapter.createFromResource(getContext(), R.array.wealthSpinArray, R.layout.spinnerlayoutcustom);
+        wealthSpinner.setAdapter(wealthAdapter);
+        wealthSpinner.setOnItemSelectedListener(this);
+
+        heightSpinner = (Spinner) myView.findViewById(R.id.heightSpinner);
+        ArrayAdapter heightAdapter = ArrayAdapter.createFromResource(getContext(), R.array.heightSpinArray, R.layout.spinnerlayoutcustom);
+        heightSpinner.setAdapter(heightAdapter);
+        heightSpinner.setOnItemSelectedListener(this);
+
+        bodyTypeSpinner = (Spinner) myView.findViewById(R.id.bodySpinner);  // NEed to change resource to match name
+        ArrayAdapter bodyTypeAdapter = ArrayAdapter.createFromResource(getContext(), R.array.bodyTypeSpinArray, R.layout.spinnerlayoutcustom);
+        bodyTypeSpinner.setAdapter(bodyTypeAdapter);
+        bodyTypeSpinner.setOnItemSelectedListener(this);
+
+        intelligenceSpinner = (Spinner) myView.findViewById(R.id.intelligenceSpinner);  // Need to change resource to match name
+        ArrayAdapter intelligenceAdapter = ArrayAdapter.createFromResource(getContext(), R.array.intelligenceSpinArray, R.layout.spinnerlayoutcustom);
+        intelligenceSpinner.setAdapter(intelligenceAdapter);
+        intelligenceSpinner.setOnItemSelectedListener(this);
     }
 
 }
