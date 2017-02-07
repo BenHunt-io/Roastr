@@ -14,14 +14,14 @@ class FilteredClass {
             "I’ve been told that inside every fat person, there’s someone beautiful… I’m just wondering who the hell you ate?",
             "Your ass is so fat, your asshole is mistaken for the blackhole",
             }, {
-            "God you're fucking basic as shit.. who want's to be average",
+            "",
             },{
             "You’ve been invited to the God damn gym’s EMPLOYEE Holiday party before",
             "Rest days? You don't know what a fucking rest day even is!",
             "God Damn, you know the names of ALL the staff BRO",
             "The only thing bigger than his traps is his child porn collection",
             "Do the helicopters land on your forehead? Ya fucking meat head",
-            "Working out isnt going to make your dick any bigger bud",
+            "Working out isn't going to make your dick any bigger bud",
             "Your breathe must smell like Bigfoot's dick",
             "Your primary source of protein comes from the locker room showers"
             }};
@@ -38,7 +38,7 @@ class FilteredClass {
             "Everyone stop insulting him, he has enough on his plate already",
             "When you stepped on the scale I thought my phone number popped up",
             }, {
-            "Stop being so basic, be fit or be fat! Sheesh",
+            "",
             }, {
             "When you miss a fitness class or a workout, you genuinely feel a sense of guilt",
             "Almost everyone who works at the gym knows your name, how many siblings you have, your star sign, etc",
@@ -60,9 +60,9 @@ class FilteredClass {
             "You're about as useless as a vibrator with no batteries",
             "You are the result of 4 billion years of evolutionary success. Fucking act like it",
             } , {
-            "Basic ass bitch",
+            "",
             }, {
-            "Hey man you got lots of Good stories, but in what chapter do you shut the fuck up?"
+            "Hey man you got lots of Good stories, but in what chapter do you shut the fuck up"
              }};
 
 
@@ -71,7 +71,7 @@ class FilteredClass {
             "It's a wonder how some people like you found their way out of the birth canal",
             "You need to act your age not your IQ",
             "I was hoping for a battle of wits in this roast, but you appear to be unarmed",
-            "Were you born this stupid or did you take lessons?",
+            "Were you born this stupid or did you take lessons",
             "If you spoke your mind, you'd be speechless",
             "I'm not saying you're stupid, I'm just saying you've got bad luck when it comes to thinking",
             "I'm sorry I hurt your feelings when I called you stupid. I really thought you already knew",
@@ -84,22 +84,22 @@ class FilteredClass {
             "Brains aren't everything. In fact, in your case they're nothing",
             "You're proof that evolution can go in reverse",
             "Your village just called. They're missing an idiot",
-            "When you go to the mind reader, do you get half price?"
+            "When you go to the mind reader, do you get half price"
              }, {
-            "\"Stop being so basic, be dumb or smart Sheesh\",",
+            "",
             }, {
             "Intelligence is like an underwear. It is important that you have it, but not necessary that you show it off",
             "You know that tingly little feeling you get when you like someone? That's your common sense leaving your body",
             "If I wanted to kill myself I'd climb your ego and jump to your IQ",
-            "Keep talking acting like you're smart, someday you'll say something intelligent!"
+            "Keep talking acting like you're smart, someday you'll say something intelligent"
             }};
 
 
     public String[][] wealthArray = {{"You have too jack off your dog too feed your cat",
-            "When you asked your mom what's for dinner she opened her legs and said spaghetti!",
+            "When you asked your mom what's for dinner she opened her legs and said spaghetti",
             "Yo mama is so poor, I took a piss on her front lawn and she thanked me for watering the lawn"
             }, {
-            "I bet you shop at target because you're basic"
+            ""
              }, {
             "It's a good thing you're rich. Maybe you can pay someone to take your virginity before you hit 30",
             "no amount of money will make up for that shit between your shoulders you call a head",
@@ -125,9 +125,9 @@ class FilteredClass {
             "You are so poor you got a eviction notice on your car",
             "You are so poor you scam Nigerians",
             }, {
-            "I bet you shop at target because you're basic"
+            ""
             }, {
-            "Daddy couldn't afford a better nose job?",
+            "Daddy couldn't afford a better nose job",
             "You're not rich",
             "You aren't rich enough to get away with being that ugly",
             "Money can buy happiness, but it can't buy your smile being fixed",
@@ -142,7 +142,7 @@ class FilteredClass {
 
 
 
-    public String[][] heightArrayDirty = {{"What's it like having marble sized testicles?",
+    public String[][] heightArrayDirty = {{"What's it like having marble sized testicles",
             "You're so short you have to do 69 with a snorkle"
             }, {
 

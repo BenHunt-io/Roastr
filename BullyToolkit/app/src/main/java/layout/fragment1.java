@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -56,35 +57,46 @@ import static android.content.ContentValues.TAG;
 
 public class fragment1 extends Fragment implements AdapterView.OnItemSelectedListener {
 
-    String[] sentenceJunction = {" and ", " also ", " not to mention ", " and to top it off ", " and shit, "};
+    String[] sentenceJunction = {" and ", " also ", " not to mention ", " and to top it off "};
 
 
-    TextToSpeech ttsObject;
-    ArrayList<String> newList = new ArrayList<>();
-    public SpinnerSelections spinnerList = new SpinnerSelections();
+    RadioButton clean; // RadioButton converted to a "Switch" for clean/dirty filter
+    RadioButton dirty; // RadioButton converted to a "Switch" for clean/dirty filter
+
     FileOutputStream fos;
-    String sentence;
+
+    String sentence; // ▼ Used for undo/redo
     String lastSentence;
-    int generateCounter = 0;
-    ImageButton soundButton;
-    ImageButton undoButton;
-    ArrayAdapter raceAdapter;
+
+    int generateCounter = 0; // counts how many times generate is clicked.. idk why
+
+    ImageButton soundButton; // textToVoice button
+    TextToSpeech ttsObject; // textToSpeech object
+    ImageButton undoButton; // undo/redo button
+
     int setLangResult;
-    int saveIntelligencePos;
-    int saveBodyPos;
-    int saveWealthPos;
-    int saveHeightPos;
-    Button generateButton;
-    Button saveButton;
-    Spinner bodyTypeSpinner;
+
+    int saveIntelligencePos; // used to save position of intelligence filter
+    int saveBodyPos; // used to save position of body filter
+    int saveWealthPos; // used to save position of wealth filter
+    int saveHeightPos; // used to save position of height filter
+
+    Button generateButton; // generates
+    Button saveButton; // saves
+
+    public SpinnerSelections spinnerList = new SpinnerSelections(); // class that holds lists
+    // of all the different filters.
+    Spinner bodyTypeSpinner; // 4 spinners (filters) ▼
     Spinner intelligenceSpinner;
     Spinner wealthSpinner;
     Spinner heightSpinner;
-    TextView displayGenerate;
+
+
+    TextView displayGenerate; // sentence (roast) that is displayed to user
+
     TextView fileInputTest;
-    GifImageView bullygif;
-    Intent intent;
-    Switch cleanFilter;
+    GifImageView bullygif; // loading animation gif
+
     String sortFileName = "sortedFile";
     String savedSelectionsFile = "selectionsFile";
 
@@ -103,8 +115,13 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
         // Inflate the layout for this fragment
         View myView = inflater.inflate(R.layout.fragment_fragment1, container, false);
 
+        clean = (RadioButton)myView.findViewById(R.id.clean); // clean filter
+        dirty = (RadioButton)myView.findViewById(R.id.dirty); // dirty filter
+        dirty.setChecked(true); // dirty by default
+
+
         bullygif = (GifImageView) myView.findViewById(R.id.bullygif);
-        bullygif.setVisibility(bullygif.INVISIBLE);
+        bullygif.setVisibility(bullygif.INVISIBLE); // Set invisible at start
 
         Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bully.otf");
 
@@ -120,7 +137,7 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
 
         fileInputTest = (TextView) getActivity().findViewById(R.id.fileInputTest);
 
-        
+
         submitButton.setTransformationMethod(null); // Disables buttons from being sets to ALL CAPS
         generateButton.setTransformationMethod(null); // Disables buttons from being sets to ALL CAPS
         saveButton.setTransformationMethod(null); // Disables buttons from being sets to ALL CAPS
@@ -166,26 +183,39 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
     }
 
     ///////////////////////////////////////////////////////////////////////////////////*
-    // makeSentence(): Depending on the selections from the spinners a sentence is
-    // created from the FilteredClass that holds all the different sentences/roasts
-    // a random number is generated to make random selection of sentences within
-    // the selected filters
+    // makeSentence(RadioButton clean, RadioButton dirty): Takes in two RadioButtons
+    // because to set default checked to dirty, initialization must be before makeSentence
+    // Depending on the selections
+    // from the spinners a sentence is created from the FilteredClass that holds all
+    // the different sentences/roasts a random number is generated to make random
+    // selection of sentences within the selected filters
+    // Finds random int at each level of the array. Strings stored in FilteredClass.java
     // Returns: [String] - Sentence/Roast to be displayed
     ///////////////////////////////////////////////////////////////////////////////////*
     public String makeSentence() {
+
+        Boolean cleanChecked;
+
+        if(clean.isChecked())
+            cleanChecked = true;
+        else
+            cleanChecked = false;
+
+
         final int four = 4;
-        int position1;
-        int position2;
+        int position1; // Randomly checks position of 1 of 4 filters selected
+        int position2; // Randomly checks position of 1 of 4 filters selected
         String sentenceOne;
         String sentenceTwo;
         String fullSentence = new String();
-        Boolean clean = false;
         Random rand = new Random();
         FilteredClass sentObj = new FilteredClass();
 
-        if (!clean) { // Find random at each level of the array. Strings stored in FilteredClass.java
-            int randCleanDirty = rand.nextInt(sentObj.allSelections.length + 0);
-            int randTwoOfFour = rand.nextInt(sentObj.allSelections[randCleanDirty].length + 0);
+        if (!cleanChecked) { // Find random at each level of the array. Strings stored in FilteredClass.java
+            //  ▼  random number to select either clean or dirty (dirty checked means either)
+            int randCleanDirty = rand.nextInt(sentObj.allSelections.length);
+            //  ▼  random number to select 1 of our 4 filters
+            int randTwoOfFour = rand.nextInt(sentObj.allSelections[randCleanDirty].length);
             switch (randTwoOfFour) { // Makes sure it chooses right user selected filter
                 case 0:
                     position1 = saveBodyPos;
@@ -202,13 +232,11 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
                 default:
                     position1 = -1;
             }
-            Log.d(TAG, "saveSorts" + saveBodyPos + " " + saveIntelligencePos + " " + saveWealthPos + " " + saveHeightPos);
-            int randSentence = rand.nextInt(sentObj.allSelections[randCleanDirty][randTwoOfFour][position1].length + 0);
-            Log.d(TAG, "pos1" + randCleanDirty + " " + randTwoOfFour + " " + position1 + " " + randSentence);
-            sentenceOne = sentObj.allSelections[randCleanDirty][randTwoOfFour][position1][randSentence].toString();
 
-            int randCleanDirty2 = rand.nextInt(sentObj.allSelections.length + 0);
-            int randTwoOfFour2 = rand.nextInt(sentObj.allSelections[randCleanDirty2].length + 0);
+            int randSentence = rand.nextInt(sentObj.allSelections[randCleanDirty][randTwoOfFour][position1].length);
+            sentenceOne = sentObj.allSelections[randCleanDirty][randTwoOfFour][position1][randSentence];
+            int randCleanDirty2 = rand.nextInt(sentObj.allSelections.length);
+            int randTwoOfFour2 = rand.nextInt(sentObj.allSelections[randCleanDirty2].length);
             switch (randTwoOfFour2) {
                 case 0:
                     position2 = saveBodyPos;
@@ -226,9 +254,9 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
                     position2 = -1;
             }
             Log.d(TAG, "pos1" + randCleanDirty2 + " " + randTwoOfFour2 + " " + position2);
-            int randSentence2 = rand.nextInt(sentObj.allSelections[randCleanDirty2][randTwoOfFour2][position2].length + 0);
+            int randSentence2 = rand.nextInt(sentObj.allSelections[randCleanDirty2][randTwoOfFour2][position2].length);
             ;
-            sentenceTwo = sentObj.allSelections[randCleanDirty2][randTwoOfFour2][position2][randSentence2].toString();
+            sentenceTwo = sentObj.allSelections[randCleanDirty2][randTwoOfFour2][position2][randSentence2];
             // Don't need +0 because its from 0 to length exclusive by default
             int randJunction = rand.nextInt(sentenceJunction.length);
             char[] newSentence = sentenceTwo.toCharArray(); // next 3 lines converts first letter 2nd sentence to lowercase
@@ -236,6 +264,56 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
             newSentence[0] = lowerCase;
             sentenceTwo = new String(newSentence);
             fullSentence = sentenceOne + sentenceJunction[randJunction] + sentenceTwo;
+        }
+        else{ // else make a clean roast
+            // 1 is clean roasts
+            int randTwoOfFour = rand.nextInt(sentObj.allSelections[1].length);
+            switch (randTwoOfFour) { // Makes sure it chooses right user selected filter
+                case 0:
+                    position1 = saveBodyPos;
+                    break;
+                case 1:
+                    position1 = saveIntelligencePos;
+                    break;
+                case 2:
+                    position1 = saveWealthPos;
+                    break;
+                case 3:
+                    position1 = saveHeightPos;
+                    break;
+                default:
+                    position1 = -1;
+            }
+
+            int randSentence = rand.nextInt(sentObj.allSelections[1][randTwoOfFour][position1].length);
+            sentenceOne = sentObj.allSelections[1][randTwoOfFour][position1][randSentence];
+            int randTwoOfFour2 = rand.nextInt(sentObj.allSelections[1].length);
+            switch (randTwoOfFour2) {
+                case 0:
+                    position2 = saveBodyPos;
+                    break;
+                case 1:
+                    position2 = saveIntelligencePos;
+                    break;
+                case 2:
+                    position2 = saveWealthPos;
+                    break;
+                case 3:
+                    position2 = saveHeightPos;
+                    break;
+                default:
+                    position2 = -1;
+            }
+            int randSentence2 = rand.nextInt(sentObj.allSelections[1][randTwoOfFour2][position2].length);
+            sentenceTwo = sentObj.allSelections[1][randTwoOfFour2][position2][randSentence2];
+            // Don't need +0 because its from 0 to length exclusive by default
+            int randJunction = rand.nextInt(sentenceJunction.length);
+            char[] newSentence = sentenceTwo.toCharArray(); // next 3 lines converts first letter 2nd sentence to lowercase
+            char lowerCase = sentenceTwo.toLowerCase().charAt(0);
+            newSentence[0] = lowerCase;
+            sentenceTwo = new String(newSentence);
+            fullSentence = sentenceOne + sentenceJunction[randJunction] + sentenceTwo;
+
         }
 
         generateCounter++;
@@ -354,12 +432,12 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
                     myRef = firebaseDatabase.getReference("Dirty").push();
                     myRef.setValue(customRoastField.getText().toString());
                     // How to toast: Toast toast = Toast.makeText(context,text,duration); then .show()
-                    Toast.makeText(getActivity(),"Submission to Database Successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),"Submission to database successful!\nSubmission under review (24hrs) ", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     myRef = firebaseDatabase.getReference("Clean").push();
                     myRef.setValue(customRoastField.getText().toString());
-                    Toast.makeText(getActivity(),"Submission to Database Successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),"Submission to database successful!\nSubmission under review (24hrs) ", Toast.LENGTH_SHORT).show();
                 }
 
 
