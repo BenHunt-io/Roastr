@@ -80,7 +80,7 @@ public class fragment2 extends Fragment implements AdapterView.OnItemSelectedLis
         // Inflate the layout for this fragment
         myView = inflater.inflate(R.layout.fragment_fragment2, container, false);
 
-        MobileAds.initialize(getActivity(), "ca-app-pub-3940256099942544~3347511713");
+        MobileAds.initialize(getActivity(), "ca-app-pub-7704357348891728/9393908292");
         mAdView = (AdView) myView.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
@@ -247,6 +247,7 @@ public class fragment2 extends Fragment implements AdapterView.OnItemSelectedLis
         Toast myToast = new Toast(getContext());
         myToast.makeText(getContext(), "Sorting coming in version 2. Donate to help :)", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onItemSelected:");
+        // ** Fixing Bugs in Sorting ** //
 //        switch (adapterView.getId()) {
 //            case R.id.sortingSpinner:
 //                saveSortPos = pos;

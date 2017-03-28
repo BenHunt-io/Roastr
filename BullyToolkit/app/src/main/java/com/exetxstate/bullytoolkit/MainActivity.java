@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         toolBar = (Toolbar)findViewById(R.id.toolbar);
         adapter = new FragmentPageAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(0);
 
         final TabLayout.Tab generateTab = tablayout.newTab();
         final TabLayout.Tab savedTab = tablayout.newTab();

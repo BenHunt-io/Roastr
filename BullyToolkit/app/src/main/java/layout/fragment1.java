@@ -317,6 +317,11 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
         }
 
         generateCounter++;
+        if(generateCounter % 5 == 0){
+            fullSentence = "Submit your own roasts to be added to the user database. The more roasts" +
+                    "that get added the better the app will be! " +
+                    "Check back soon for a bigger and better database of the best roasts!";
+        }
         return fullSentence;
     }
 
@@ -454,7 +459,7 @@ public class fragment1 extends Fragment implements AdapterView.OnItemSelectedLis
     ///////////////////////////////////////////////////////////////////////////////////*
     public void runAds(View myView){
 
-        MobileAds.initialize(getActivity(), "ca-app-pub-3940256099942544~3347511713");
+        MobileAds.initialize(getActivity(), "ca-app-pub-7704357348891728/9393908292");
         mAdView = (AdView) myView.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
